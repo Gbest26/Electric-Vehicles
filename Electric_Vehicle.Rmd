@@ -1,0 +1,128 @@
+---
+title: "Project Company"
+author: "George.B"
+date: "2022-12-19"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(dplyr)
+library(janitor)
+library(skimr)
+library(lubridate)
+library(tidyr)
+library(ggplot2)
+library(colorspace)
+library(here)
+```
+
+
+# Summary
+##### project.
+
+* Electric Vehicle(E.V) that has a total distance of over 220 and their Models.
+* Company with the highest number of E.v since the invention of E.V.
+* Number E.v that runs on Battery to those that are Plug_in Hybrid.
+
+* This data and it's findings are all based in USA.
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(readr)
+Electric_Vehicle_Population <- read_csv("C:/Users/pc/Desktop/my project raw file/Electric_Vehicle_Population.csv")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data=Electric_Vehicle_Population)+
+  geom_count(mapping = aes(x=Make, y=Model_Year))+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(title = "Electric cars by makers", 
+       subtitle = "Companies with highest number of E.cars made over the years")
+```
+
+* The viz above shows the Companies with highest E.V made and the years this Vehicles were made.
+* Tesla has the largest amount of E.V's made among others, starting from 2018 up to 2022.
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+Electric_Vehicle_Range <- Electric_Vehicle_Population %>%  
+  group_by(Electric_Range,Model_Year,Make,Model,Electric_Vehicle_Type,Clean_Alternative_Fuel_Vehicle_Eligibility) %>% 
+  drop_na() %>% 
+  summarise(Electric_Range=max(Electric_Range))
+```
+
+```{r echo=FALSE, fig.height=.9, fig.width=.5, message=FALSE, warning=FALSE, paged.print=TRUE}
+Electric_Vehicle_Range2 <- Electric_Vehicle_Range %>% 
+  tail(30)
+print(Electric_Vehicle_Range2)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = Electric_Vehicle_Range2)+
+  geom_point(mapping = aes(x=Model_Year, y=Electric_Range, color=Model))+
+  theme(axis.text.x = element_text(angle = 60))+
+  facet_wrap(~Make)+
+  labs(title = "E.V,Makers and Miles Covered", 
+       subtitle = "Total Distance Covered by Electric Vehicles (E.V)")
+```
+
+* the chart above shows E.V that covers a distance of above 220 miles.
+* Tesla has the only E.V that covers a distance above 300 mile in total, with it's 2020 Model 3 covering a distance of 308 to 322 miles in total, while it 2020 Model S cover a distance above 330 to 337 miles in total.
+* All this E.V are all powered by Battery Electric Vehicles(BEV) and not Plug-in Hybrid Electric Vehicle(PHEV).
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+Electric_Vehicle_Range3 <- Electric_Vehicle_Population %>%  
+  group_by(Model_Year,Electric_Range,Make,Model,Electric_Vehicle_Type,Clean_Alternative_Fuel_Vehicle_Eligibility) %>% 
+  drop_na() %>% 
+  summarise(Electric_Range=max(Electric_Range))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
+Electric_Vehicle_Range4 <- Electric_Vehicle_Range3 %>% 
+  head(5)
+print(Electric_Vehicle_Range4)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = Electric_Vehicle_Range4)+
+  geom_point(mapping = aes(x=Make, y=Electric_Range, color=Model))+
+  theme(axis.text.x = element_text(angle = 60))+
+  facet_wrap(~Model_Year)+
+  labs(title = "First E.V Made And Makers", 
+       subtitle = "The First Electric Vehicles (E.V) Made by Car Companies")
+```
+
+* The chart above show the earliest E.V to be invented by cars makers.
+* Chevrolet were the first company to make E.V Modeled S-10 pickup and it covers a total distance of 37 miles in total,it was invented in the year 1997.
+* Ford was the second company to have create an E.V in the 1998,1999 and 2000 with and the E.V model was Ranger, and it covered a total miles of 54(1998),74(1999) and 54(2000).
+* Toyota latter created the RAV4 in 2022 has a total miles of 95.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data= Electric_Vehicle_Population)+
+  geom_bar(mapping = aes(x=Clean_Alternative_Fuel_Vehicle_Eligibility, fill=Electric_Vehicle_Type))+
+  theme(axis.text.x = element_text(angle = 45))+
+  facet_wrap(~Electric_Vehicle_Type)+
+  labs(title = "Vehicle Fuel Eligibility", subtitle = "Number of that Runs on Clean Energy")
+```
+
+* the chart above show the Eligibility and E.V that runs on clean alternative, not eligible due to low battery and those that have not yet been researched on.
+* on the Battery Electric Vehicle(BEV) the number of E.vehicles fueled clean alternative are above 45,000, while those that have not yet been researched on is above 35,000 E.V in USA.
+* while those E.V powered by Plug-in Hybrid Electric vehicle(PHEV), the number of E.V that runs on clean alternative are above 10,000 and those  on not eligible due to low battery are close to 15,000 in USA.
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data= Electric_Vehicle_Population)+
+  geom_bar(mapping = aes(x=Electric_Vehicle_Type))+
+  theme(axis.text.x = element_text(angle = 45))+
+  labs(title = "Vehicle Fuel Eligibility", subtitle = "Number of that Runs on Clean Energy")
+```
+
+* This chart show the total number of E.V powered by Battery Electric against those powered Plug_in Hybrid. 
+* Battery Electric Vehicles has the highest number of Vehicles manufactured by manufacturers with a number between 84,000 to 86,000 E.v in the USA
+* While the Plug-in Hybrid has a number between 27,000 to 28,500 in the USA.
